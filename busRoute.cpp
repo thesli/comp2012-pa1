@@ -122,8 +122,21 @@ busRoute readlist(const char* filename)
 /* Erase the route object and deallocate all the nodes in the linked list */
 void eraseRoute(busRoute& route)
 {
-  // fill your code here
-
+  busRoute* routePtr = &route;
+  if(routePtr==NULL){    
+    return;
+  }    
+  stop_pointer ptr = routePtr->start;
+  stop_pointer tempPtr;
+  if(ptr!=NULL){
+    for(;ptr->next!=NULL;){
+      tempPtr = ptr;      
+      ptr = ptr->next;
+      delete tempPtr;
+    }
+  }
+  delete routePtr->start;
+  delete routePtr;
 }
 
 /* To search and return the pointer to the node of the linked list,
