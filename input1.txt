@@ -1,0 +1,4 @@
+11
+Diamond Hill MTR Station,22.340017,114.201698
+Choi Hung MTR Station,22.334969,114.20905
+UST North,22.3364,114.265466
