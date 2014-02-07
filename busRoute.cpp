@@ -3,7 +3,7 @@
 #include <string>
 #include <stdlib.h>
 #include <math.h>
-
+#include <sstream>
 #include "busRoute.h"
 
 using namespace std;
@@ -72,7 +72,51 @@ void printRoute(busRoute route, ostream& os)
 busRoute readlist(const char* filename) 
 {
   // fill your code here 
-
+  busRoute bR;
+  ifstream infile;
+  string routeLine,routeNo;  
+  infile.open(filename);
+  getline(infile,routeNo);
+  bR.routeNo = atoi(routeNo.c_str());
+  bR.start = new stop_node;
+  bool isFirst = true;
+  stop_pointer prevPtr;
+  while(!infile.eof()){
+    getline(infile,routeLine);
+    stop_pointer ptr = new stop_node;
+    istringstream iss(routeLine);
+    string data;
+    int no = 0;
+    while(getline(iss,data,',')){
+      switch(no){
+        case 0:
+          ptr->stop_name = data;          
+          break;
+        case 1:
+          ptr->longitude = atof(data.c_str());
+          break;
+        case 2:
+          ptr->latitude = atof(data.c_str());
+          break;
+      }
+      no++;
+    }
+    if(isFirst){
+      bR.start = ptr;
+      ptr->prev = NULL;
+      isFirst = false;
+      prevPtr = ptr;
+    }else{
+      if(infile.eof()){
+        ptr->next=NULL;
+      }
+      prevPtr->next = ptr;
+      ptr->prev = prevPtr;
+      prevPtr = ptr;
+    }
+  }
+  infile.close();
+  return bR;
 }
 
 /* Erase the route object and deallocate all the nodes in the linked list */
