@@ -257,16 +257,33 @@ float pathLength(busRoute route)
 /* To reverse the doubly linked list of the route object */
 void reverseRoute(busRoute& route)
 {
-  stop_pointer temp=route.start;
-  if (temp->next != NULL)
-  {
-    while (temp->next != NULL)
-    {
-      temp = temp->next; 
+  // stop_pointer temp=route.start;
+  // if (temp->next != NULL)
+  // {
+  //   while (temp->next != NULL)
+  //   {
+  //     temp = temp->next; 
+  //   }  
+  //   reverseList(route, route.start->stop_name, temp->stop_name);    
+  // }  
+  stop_pointer endPtr = route.start;  
+  stop_pointer tPtr;  
+  while(true){
+    if(endPtr->next==NULL){      
+      break;
     }
-  
-    reverseList(route, route.start->stop_name, temp->stop_name);
+    endPtr = endPtr->next;
   }
+  route.start = endPtr;
+  tPtr = endPtr;
+  cout << endPtr->stop_name << endl;
+  cout << endPtr->prev->stop_name << endl;
+  cout << endPtr->prev->prev->stop_name << endl;
+  // while(tPtr->prev!=NULL){
+  //   tPtr->next = tPtr->prev;
+  //   tPtr = tPtr->next;
+  // }
+  route.start = endPtr;
 }
 
 /* To reverse the nodes between stopA to stopB in the doubly linked list of the route object */
@@ -304,7 +321,6 @@ void reverseList(busRoute& route, string stopA, string stopB)
     // case when A is second
     reverseList(route,stopB,stopA);
   }
-
 }
 
 
@@ -312,6 +328,45 @@ void reverseList(busRoute& route, string stopA, string stopB)
 void insertStop(busRoute& route, string stopname, float longitude, float latitude)
 {
   // fill your code here
+  stop_pointer nPtr = new stop_node;
+    nPtr->stop_name = stopname;
+    nPtr->longitude = longitude;
+    nPtr->latitude = latitude;
+  if(route.start==NULL){    
+    nPtr->prev = NULL;
+    route.start = nPtr;
+  }else if(route.start->next==NULL){    
+    nPtr->next = NULL;
+    route.start->next = nPtr;
+  }else{
+    stop_pointer tPtr = route.start;
+    stop_pointer closestPtr;
+    float min = 999999.0;
+    while(true){
+      if(tPtr->next == NULL){
+        break;
+      }
+      float diff = 
+          pow(
+            pow(latitude - tPtr->latitude , 2)+
+            pow(longitude - tPtr->longitude , 2)
+          ,0.5) + 
+          pow(
+            pow(latitude - tPtr->next->latitude , 2)+
+            pow(longitude - tPtr->next->longitude , 2)
+          ,0.5);                
+      if(min>=diff){
+        closestPtr = tPtr;
+        min = diff;
+      }
+      tPtr = tPtr->next;
+    }
+    stop_pointer cNext = closestPtr->next;
+    cNext->prev = nPtr;
+    nPtr->next = cNext;
+    nPtr->prev = closestPtr;
+    closestPtr->next = nPtr;
+  }
 }
 
 // End of file

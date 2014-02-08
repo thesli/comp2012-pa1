@@ -19,7 +19,7 @@ typedef struct stop_node {
 typedef struct busRoute {
   int routeNo;  // the route number of the stop
   stop_pointer start;  // the head of the linked list
-};
+};  
 
 /* To check if the route is empty.
    If the linked list, route, is empty, returns true, otherwise, returns false. */
