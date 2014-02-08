@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
    printRoute(route1, out);
    out << endl;
 
-   eraseRoute(route1);
+   eraseRoute(route1);   
 
    of.close();
 

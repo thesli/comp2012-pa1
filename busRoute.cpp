@@ -73,13 +73,14 @@ void printRoute(busRoute route, ostream& os)
 busRoute readlist(const char* filename) 
 {
   // fill your code here 
+  busRoute* bRPtr = new busRoute;
   busRoute bR;
   ifstream infile;
   string routeLine,routeNo;  
   infile.open(filename);
   getline(infile,routeNo);
-  bR.routeNo = atoi(routeNo.c_str());
-  bR.start = new stop_node;
+  bRPtr->routeNo = atoi(routeNo.c_str());
+  bRPtr->start = new stop_node;
   bool isFirst = true;
   stop_pointer prevPtr;
   while(getline(infile,routeLine)){            
@@ -90,7 +91,7 @@ busRoute readlist(const char* filename)
     while(getline(iss,data,',')){
       switch(no){
         case 0:
-          ptr->stop_name = data;          
+          ptr->stop_name = data;
           break;
         case 1:
           ptr->longitude = atof(data.c_str());
@@ -102,7 +103,7 @@ busRoute readlist(const char* filename)
       no++;
     }
     if(isFirst){
-      bR.start = ptr;
+      bRPtr->start = ptr;
       ptr->prev = NULL;
       isFirst = false;      
       prevPtr = ptr;
@@ -115,58 +116,71 @@ busRoute readlist(const char* filename)
     }
   }
   infile.close();
-  return bR;
+  return *bRPtr;
 }
 
 /* Erase the route object and deallocate all the nodes in the linked list */
 void eraseRoute(busRoute& route)
-{
-  // busRoute* routePtr = &route;
-  // if(routePtr==NULL){    
-  //   return;
-  // }    
-  // stop_pointer ptr = routePtr->start;
-  // stop_pointer tempPtr;
-  // if(ptr!=NULL){
-  //   for(;ptr->next!=NULL;){
-  //     tempPtr = ptr;      
-  //     ptr = ptr->next;
-  //     delete tempPtr;
-  //   }
-  // }
-  // delete routePtr->start;
-  // delete routePtr;
+{  
+  busRoute* routePtr = &route;
+  if(routePtr==NULL){    
+    return;
+  }    
+  stop_pointer ptr = routePtr->start;
+  stop_pointer tempPtr;  
+  delete ptr->prev;
+  while(true){        
+    tempPtr = ptr;
+    if(ptr->next!=NULL){
+      ptr = ptr->next;
+      delete tempPtr;
+    }else{
+      delete tempPtr;
+      break;
+    }
+  }  
+  // delete &route;  
 }
 
 /* To search and return the pointer to the node of the linked list,
    stop_node,with the given name, stopName, in the route object */
 stop_pointer searchlist(busRoute route, string stopName)
-{
-  // fill your code here  
-  // stop_pointer ptr = route.start;
-  // if(ptr==NULL){
-  //   return NULL;
-  // }
-  // if(ptr->stop_name.compare(stopName)){
-  //   cout << "the first one correct" << endl;
-  //   return ptr;
-  // }
-  // while(ptr->next!=NULL){
-  //   ptr = ptr->next;
-  //   if(ptr->stop_name.compare(stopName)){
-  //     cout << "some of them are correct";
-  //     return ptr;
-  //   } 
-  // }
-  // return NULL;
+{  
+  stop_pointer ptr = route.start;
+  if(ptr==NULL){
+    return NULL;
+  }
+  if(ptr->stop_name.compare(stopName)==0){    
+    cout << "the first one correct" << endl;
+    return ptr;
+  }
+  while(ptr->next!=NULL){
+    ptr = ptr->next;
+    if(ptr->stop_name.compare(stopName)==0){
+      cout << "some of them are correct";
+      return ptr;
+    } 
+  }
+  return NULL;
 }
 
 /* To search if a bus stop with the given name existed in the route.
    If found, returns true, otherwise, returns false. */
 bool searchStop(busRoute route, string stopName)
 {
-  // fill your code here
-
+  stop_pointer ptr = route.start;
+  if(ptr==NULL){
+    return false;
+  }
+  while(true){
+    if(ptr->name.compare(stopName)==0){
+      return true;
+    }
+    if(ptr->next!=NULL){
+      return 
+    }
+  }
+  return false;
 }
 
 /* To remove a bus stop with the given name from the route */
