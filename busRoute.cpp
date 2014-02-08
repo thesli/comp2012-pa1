@@ -74,11 +74,11 @@ busRoute readlist(const char* filename)
 {
   // fill your code here 
   busRoute* bRPtr = new busRoute;
-  busRoute bR;
+  busRoute bR;  
   ifstream infile;
   string routeLine,routeNo;  
-  infile.open(filename);
-  getline(infile,routeNo);
+  infile.open(filename);  
+  getline(infile,routeNo);    
   bRPtr->routeNo = atoi(routeNo.c_str());
   bRPtr->start = new stop_node;
   bool isFirst = true;
@@ -208,18 +208,50 @@ void removeStop(busRoute& route, string stopName)
 
 }
 
-/* To find the displacement, i.e. the difference between the first and the last bus stops */
+/* To find the displacement, i.e. the difference between th e first and the last bus stops */
 float directDistance(busRoute route)
 {
-  // fill your code here
-
+  if(route.start==NULL || route.start->next==NULL){
+    return 0;
+  }
+  stop_pointer firstPtr = route.start;
+  stop_pointer lastPtr = route.start;    
+  while(true){
+    if(lastPtr->next!=NULL){      
+      lastPtr = lastPtr->next;
+    }else{
+      break;
+    }
+  }  
+  return 
+    pow(
+      pow(firstPtr->latitude - lastPtr->latitude , 2)+
+      pow(firstPtr->longitude - lastPtr->longitude , 2)
+    ,0.5);
 }
 
 /* To find the sum of displacements, i.e. differences,  between every two consecutive bus stops on the bus route */
 float pathLength(busRoute route)
 {
-  // fill your code here
-
+  float sum = 0;
+  if(route.start==NULL||route.start->next==NULL){
+    return sum;
+  }
+  stop_pointer ptr = route.start;
+  while(true){
+    if(ptr->next!=NULL){
+      float diff = 
+        pow(
+          pow(ptr->latitude - ptr->next->latitude , 2)+
+          pow(ptr->longitude - ptr->next->longitude , 2)
+        ,0.5);      
+      sum += diff;
+      ptr = ptr->next;
+    }else{
+      break;
+    }
+  }  
+  return sum;
 }
 
 /* To reverse the doubly linked list of the route object */
@@ -241,6 +273,37 @@ void reverseRoute(busRoute& route)
 void reverseList(busRoute& route, string stopA, string stopB)
 {
   // fill your code here
+  if(!(searchStop(route,stopA)&&searchStop(route,stopB))){
+    return;
+  }
+
+  stop_pointer stopAptr = searchlist(route,stopA);
+  stop_pointer stopBptr = searchlist(route,stopB);      
+
+  stop_pointer aNext = stopAptr->next;
+  stop_pointer aPrev = stopAptr->prev;
+  stop_pointer bNext = stopBptr->next;
+  stop_pointer bPrev = stopBptr->prev;
+
+  if(stopAptr->next == stopBptr){    
+    // case when A is first    
+    if(aPrev!=NULL){
+      aPrev->next = stopBptr;
+      stopBptr->prev = aPrev;
+      stopBptr->next = stopAptr;
+      stopAptr->prev = stopBptr;
+      stopAptr->next = bNext;
+    }else{
+      route.start = stopBptr;
+      stopBptr->prev = NULL;
+      stopBptr->next = stopAptr;
+      stopAptr->prev = stopBptr;
+      stopAptr->next = bNext;
+    }    
+  }else if(stopBptr->next == stopAptr){
+    // case when A is second
+    reverseList(route,stopB,stopA);
+  }
 
 }
 

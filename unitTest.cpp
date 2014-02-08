@@ -63,6 +63,47 @@ int main(int argc, char const *argv[])
 	assert(route1.start->stop_name.compare("Diamond Hill MTR Station")==0);
 	assert(route1.start->next->stop_name.compare("Choi Hung MTR Station")==0);
 
+	//test the function of directDistance
+	route1 = readlist("input1.txt");	
+	assert(directDistance(route1)>0.06);
+	assert(directDistance(route1)<0.07);
+	
+	//test the function of pathLength
+	route1 = readlist("input1.txt");
+	assert(pathLength(route1)>directDistance(route1));
+	assert(pathLength(route1)<0.07);	
 
-	return 0;
+	//test the function of reverseList	
+
+	route1 = readlist("input1.txt");
+	reverseList(route1,"Diamond Hill MTR Station","Choi Hung MTR Station");	
+	assert(route1.start->stop_name.compare("Choi Hung MTR Station")==0);
+	assert(route1.start->next->stop_name.compare("Diamond Hill MTR Station")==0);
+	assert(route1.start->next->next->stop_name.compare("UST North")==0);
+
+	route1 = readlist("input1.txt");
+	reverseList(route1,"Choi Hung MTR Station","Diamond Hill MTR Station");
+	assert(route1.start->stop_name.compare("Choi Hung MTR Station")==0);
+	assert(route1.start->next->stop_name.compare("Diamond Hill MTR Station")==0);
+	assert(route1.start->next->next->stop_name.compare("UST North")==0);	
+
+	route1 = readlist("input1.txt");
+	reverseList(route1,"Choi Hung MTR Station","UST North");
+	assert(route1.start->stop_name.compare("Diamond Hill MTR Station")==0);
+	assert(route1.start->next->stop_name.compare("UST North")==0);
+	assert(route1.start->next->next->stop_name.compare("Choi Hung MTR Station")==0);	
+
+	route1 = readlist("input1.txt");		
+	reverseList(route1,"UST North","Choi Hung MTR Station");
+	assert(route1.start->stop_name.compare("Diamond Hill MTR Station")==0);
+	assert(route1.start->next->stop_name.compare("UST North")==0);
+	assert(route1.start->next->next->stop_name.compare("Choi Hung MTR Station")==0);	
+
+	//test the function of reverseRoute
+	route1 = readlist("input1.txt");
+	printRoute(route1,out);
+	reverseRoute(route1);
+	printRoute(route1,out);
+
+
 }
