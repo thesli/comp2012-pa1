@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sstream>
+#include <string.h>
 #include "busRoute.h"
 
 using namespace std;
@@ -81,8 +82,7 @@ busRoute readlist(const char* filename)
   bR.start = new stop_node;
   bool isFirst = true;
   stop_pointer prevPtr;
-  while(!infile.eof()){
-    getline(infile,routeLine);
+  while(getline(infile,routeLine)){            
     stop_pointer ptr = new stop_node;
     istringstream iss(routeLine);
     string data;
@@ -104,15 +104,14 @@ busRoute readlist(const char* filename)
     if(isFirst){
       bR.start = ptr;
       ptr->prev = NULL;
-      isFirst = false;
+      isFirst = false;      
       prevPtr = ptr;
-    }else{
-      if(infile.eof()){
-        ptr->next=NULL;
-      }
-      prevPtr->next = ptr;
+      ptr->next = NULL;
+    }else{      
+      prevPtr->next = ptr;   
       ptr->prev = prevPtr;
       prevPtr = ptr;
+      ptr->next=NULL;     
     }
   }
   infile.close();
@@ -122,29 +121,44 @@ busRoute readlist(const char* filename)
 /* Erase the route object and deallocate all the nodes in the linked list */
 void eraseRoute(busRoute& route)
 {
-  busRoute* routePtr = &route;
-  if(routePtr==NULL){    
-    return;
-  }    
-  stop_pointer ptr = routePtr->start;
-  stop_pointer tempPtr;
-  if(ptr!=NULL){
-    for(;ptr->next!=NULL;){
-      tempPtr = ptr;      
-      ptr = ptr->next;
-      delete tempPtr;
-    }
-  }
-  delete routePtr->start;
-  delete routePtr;
+  // busRoute* routePtr = &route;
+  // if(routePtr==NULL){    
+  //   return;
+  // }    
+  // stop_pointer ptr = routePtr->start;
+  // stop_pointer tempPtr;
+  // if(ptr!=NULL){
+  //   for(;ptr->next!=NULL;){
+  //     tempPtr = ptr;      
+  //     ptr = ptr->next;
+  //     delete tempPtr;
+  //   }
+  // }
+  // delete routePtr->start;
+  // delete routePtr;
 }
 
 /* To search and return the pointer to the node of the linked list,
    stop_node,with the given name, stopName, in the route object */
 stop_pointer searchlist(busRoute route, string stopName)
 {
-  // fill your code here
-
+  // fill your code here  
+  // stop_pointer ptr = route.start;
+  // if(ptr==NULL){
+  //   return NULL;
+  // }
+  // if(ptr->stop_name.compare(stopName)){
+  //   cout << "the first one correct" << endl;
+  //   return ptr;
+  // }
+  // while(ptr->next!=NULL){
+  //   ptr = ptr->next;
+  //   if(ptr->stop_name.compare(stopName)){
+  //     cout << "some of them are correct";
+  //     return ptr;
+  //   } 
+  // }
+  // return NULL;
 }
 
 /* To search if a bus stop with the given name existed in the route.
