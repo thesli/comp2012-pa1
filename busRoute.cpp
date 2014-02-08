@@ -150,14 +150,12 @@ stop_pointer searchlist(busRoute route, string stopName)
   if(ptr==NULL){
     return NULL;
   }
-  if(ptr->stop_name.compare(stopName)==0){    
-    cout << "the first one correct" << endl;
+  if(ptr->stop_name.compare(stopName)==0){        
     return ptr;
   }
   while(ptr->next!=NULL){
     ptr = ptr->next;
-    if(ptr->stop_name.compare(stopName)==0){
-      cout << "some of them are correct";
+    if(ptr->stop_name.compare(stopName)==0){      
       return ptr;
     } 
   }
@@ -173,11 +171,13 @@ bool searchStop(busRoute route, string stopName)
     return false;
   }
   while(true){
-    if(ptr->name.compare(stopName)==0){
+    if(ptr->stop_name.compare(stopName)==0){
       return true;
     }
     if(ptr->next!=NULL){
-      return 
+      ptr = ptr->next;      
+    }else{
+      break;
     }
   }
   return false;
@@ -187,7 +187,25 @@ bool searchStop(busRoute route, string stopName)
 void removeStop(busRoute& route, string stopName)
 {
   // fill your code here
- 
+  busRoute* routePtr = &route;  
+  if(searchStop(route,stopName)){
+    stop_pointer toDelPtr = searchlist(route,stopName);    
+    if(toDelPtr->prev!=NULL){
+      if(toDelPtr->next!=NULL){
+        toDelPtr->next->prev = toDelPtr->prev;
+        toDelPtr->prev->next = toDelPtr->next;
+        delete toDelPtr;
+      }else{
+        toDelPtr->prev->next = NULL;
+        delete toDelPtr;
+      }      
+    }else{
+      routePtr->start = toDelPtr->next;
+      toDelPtr->next->prev = routePtr->start;
+      delete toDelPtr;
+    }    
+  }
+
 }
 
 /* To find the displacement, i.e. the difference between the first and the last bus stops */
